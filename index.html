@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Todo Card</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>*{box-sizing:border-box}
+
+body{
+margin:0;
+font-family:'Inter',sans-serif;
+background:#eef4f8;
+display:flex;
+justify-content:center;
+align-items:center;
+min-height:100vh;
+padding:24px;
+}
+
+/* CARD */
+article{
+width:100%;
+max-width:460px;
+background:#fff;
+border-radius:20px;
+padding:22px;
+box-shadow:0 10px 30px rgba(0,0,0,0.08);
+
+display:flex;
+flex-direction:column;
+gap:16px;
+
+border-left:6px solid transparent;
+}
+
+/* PRIORITY COLORS */
+.priority-high{border-left-color:#e74c3c}
+.priority-medium{border-left-color:#f39c12}
+.priority-low{border-left-color:#2ecc71}
+
+/* TOP ROW */
+.top-row{
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:12px;
+}
+
+/* STATUS SELECT */
+select{
+padding:6px 10px;
+border-radius:9px;
+border:1px solid #ddd;
+font-size:12px;
+margin-bottom: 12px;
+
+}
+
+/* CHECKBOX */
+.check-wrap{
+display:flex;
+align-items:center;
+gap:6px;
+font-size:13px;
+}
+
+/* PRIORITY BADGE */
+.priority{
+font-size:12px;
+font-weight:600;
+padding:6px 12px;
+border-radius:999px;
+display:inline-block;
+margin-bottom: 10px;
+}
+
+.priority-high-text{background:#ffe6e6;color:#c0392b}
+.priority-medium-text{background:#fff3e0;color:#e67e22}
+.priority-low-text{background:#eafaf1;color:#27ae60}
+
+/* TITLE */
+h2{
+margin:0;
+font-size:21px;
+line-height:1.4;
+}
+
+/* DONE STATE */
+.done h2{
+text-decoration:line-through;
+opacity:.6;
+}
+
+/* DESCRIPTION */
+#descWrap{
+display:flex;
+flex-direction:column;
+gap:6px;
+}
+
+p{
+margin:0;
+color:#555;
+line-height:1.6;
+}
+
+.collapsed{
+max-height:60px;
+overflow:hidden;
+}
+
+/* EXPAND BUTTON */
+#expandBtn{
+background:#f0f3f6;
+padding:6px 10px;
+border-radius:8px;
+font-size:12px;
+width:max-content;
+margin-top: 8px;
+margin-bottom: 10px;
+}
+
+/* META */
+.meta{
+display:flex;
+flex-wrap:wrap;
+gap:10px;
+}
+
+/* CHIP */
+.chip{
+background:#f1f3f5;
+padding:6px 12px;
+border-radius:999px;
+font-size:12px;
+margin-bottom:10px;
+}
+
+/* OVERDUE */
+.time-red{
+color:#e74c3c;
+font-weight:600;
+margin-bottom: 10px;
+}
+
+/* TAGS */
+ul{
+display:flex;
+gap:8px;
+flex-wrap:wrap;
+padding:0;
+margin:0;
+list-style:none;
+margin-top: 10px;
+}
+
+ul li{
+font-size:12px;
+background:#eaf2ff;
+padding:6px 12px;
+border-radius:999px;
+margin-bottom: 10px;
+}
+
+/* ACTION BUTTONS */
+.actions{
+display:flex;
+gap:12px;
+margin-top:4px;
+}
+
+button{
+flex:1;
+padding:11px;
+border-radius:12px;
+border:none;
+font-weight:600;
+cursor:pointer;
+transition:0.2s ease;
+}
+
+button:hover{
+transform:translateY(-1px);
+}
+
+button:focus{
+outline:2px solid #333;
+outline-offset:2px;
+}
+
+.edit{background:#f0f3f6}
+.delete{background:#ffe6e6;color:#c0392b}
+
+/* EDIT MODE */
+form{
+display:flex;
+flex-direction:column;
+gap:14px;
+}
+
+input, textarea, select{
+width:100%;
+padding:11px 12px;
+border-radius:10px;
+border:1px solid #ddd;
+font-size:14px;
+}
+
+textarea{
+min-height:90px;
+resize:vertical;
+}
+
+/* HIDDEN */
+.hidden{display:none}
+
+/* MOBILE */
+@media(max-width:480px){
+article{
+padding:18px;
+gap:14px;
+}
+
+button{
+padding:10px;
+}
+}</style>
+
+</head>
+
+<body>
+
+<article data-testid="test-todo-card" id="card" class="priority-high">
+
+<!-- VIEW -->
+<div id="viewMode">
+
+<div class="top-row">
+<select data-testid="test-todo-status-control" id="statusControl">
+<option>Pending</option>
+<option selected>In Progress</option>
+<option>Done</option>
+</select>
+
+<div class="check-wrap">
+<label for="doneToggle">Done</label>
+<input id="doneToggle" type="checkbox"
+data-testid="test-todo-complete-toggle">
+</div>
+</div>
+
+<span class="priority priority-high-text"
+data-testid="test-todo-priority" id="priorityText">
+High
+</span>
+
+<h2 data-testid="test-todo-title" id="title">
+Design System Overhaul
+</h2>
+
+<div data-testid="test-todo-collapsible-section"
+id="descWrap" class="collapsed">
+<p data-testid="test-todo-description">
+Rebuild the component library from scratch — tokens, spacing, and dark mode support.
+</p>
+</div>
+
+<button id="expandBtn"
+data-testid="test-todo-expand-toggle"
+aria-expanded="false"
+aria-controls="descWrap">
+Expand
+</button>
+
+<div class="meta">
+<time data-testid="test-todo-due-date" id="dueDate" class="chip"></time>
+
+<span data-testid="test-todo-time-remaining"
+id="timeLeft"
+class="chip"
+aria-live="polite"></span>
+
+<span data-testid="test-todo-overdue-indicator"
+id="overdue"
+class="chip time-red hidden">
+Overdue
+</span>
+</div>
+
+<ul data-testid="test-todo-tags">
+<li data-testid="test-todo-tag-work">Work</li>
+<li data-testid="test-todo-tag-urgent">Urgent</li>
+<li>Design</li>
+</ul>
+
+<div class="actions">
+<button class="edit"
+data-testid="test-todo-edit-button"
+id="editBtn">Edit</button>
+
+<button class="delete"
+data-testid="test-todo-delete-button"
+onclick="alert('Delete clicked')">
+Delete
+</button>
+</div>
+
+</div>
+
+<!-- EDIT -->
+<form id="editForm" class="hidden"
+data-testid="test-todo-edit-form">
+
+<input id="editTitle"
+data-testid="test-todo-edit-title-input">
+
+<textarea id="editDesc"
+data-testid="test-todo-edit-description-input"></textarea>
+
+<select id="editPriority"
+data-testid="test-todo-edit-priority-select">
+<option>Low</option>
+<option>Medium</option>
+<option>High</option>
+</select>
+
+<input type="datetime-local"
+id="editDate"
+data-testid="test-todo-edit-due-date-input">
+
+<button type="button"
+data-testid="test-todo-save-button"
+id="saveBtn">Save</button>
+
+<button type="button"
+data-testid="test-todo-cancel-button"
+id="cancelBtn">Cancel</button>
+
+</form>
+
+</article>
+
+<script>let state = {
+  title: "Design System Overhaul",
+  desc: "Rebuild the component library from scratch — tokens, spacing, and dark mode support.",
+  priority: "High",
+  status: "In Progress",
+  due: new Date(Date.now() + 86400000 * 2)
+};
+
+const card = document.getElementById("card");
+const titleEl = document.getElementById("title");
+const descEl = document.querySelector("[data-testid='test-todo-description']");
+const dueEl = document.getElementById("dueDate");
+const timeEl = document.getElementById("timeLeft");
+const overdueEl = document.getElementById("overdue");
+
+function applyPriority() {
+  card.className = "";
+  card.classList.add("priority-" + state.priority.toLowerCase());
+  
+  const p = document.getElementById("priorityText");
+  p.className = "priority priority-" + state.priority.toLowerCase() + "-text";
+  p.textContent = state.priority;
+}
+
+function render() {
+  titleEl.textContent = state.title;
+  descEl.textContent = state.desc;
+  dueEl.textContent = "Due " + state.due.toDateString();
+  document.getElementById("statusControl").value = state.status;
+  
+  applyPriority();
+  
+  if (state.status === "Done") {
+    card.classList.add("done");
+    timeEl.textContent = "Completed";
+  } else {
+    card.classList.remove("done");
+  }
+}
+
+function updateTime() {
+  if (state.status === "Done") return;
+  
+  const now = new Date();
+  const diff = state.due - now;
+  
+  let text = "";
+  const mins = Math.floor(Math.abs(diff) / 60000);
+  const hrs = Math.floor(mins / 60);
+  const days = Math.floor(hrs / 24);
+  
+  if (diff < 0) {
+    overdueEl.classList.remove("hidden");
+    text = `Overdue by ${hrs}h`;
+  } else {
+    overdueEl.classList.add("hidden");
+    
+    if (mins < 60) text = `Due in ${mins}m`;
+    else if (hrs < 24) text = `Due in ${hrs}h`;
+    else if (days === 1) text = "Due tomorrow";
+    else text = `Due in ${days} days`;
+  }
+  
+  timeEl.textContent = text;
+}
+
+setInterval(updateTime, 60000);
+updateTime();
+render();
+
+/* sync */
+const checkbox = document.getElementById("doneToggle");
+const statusControl = document.getElementById("statusControl");
+
+checkbox.onchange = () => {
+  state.status = checkbox.checked ? "Done" : "Pending";
+  statusControl.value = state.status;
+  render();
+};
+
+statusControl.onchange = () => {
+  state.status = statusControl.value;
+  checkbox.checked = state.status === "Done";
+  render();
+};
+
+/* expand */
+expandBtn.onclick = () => {
+  const expanded = expandBtn.getAttribute("aria-expanded") === "true";
+  expandBtn.setAttribute("aria-expanded", !expanded);
+  expandBtn.textContent = expanded ? "Expand" : "Collapse";
+  descWrap.classList.toggle("collapsed");
+};
+
+/* edit */
+editBtn.onclick = () => {
+  viewMode.classList.add("hidden");
+  editForm.classList.remove("hidden");
+  
+  editTitle.value = state.title;
+  editDesc.value = state.desc;
+  editPriority.value = state.priority;
+  editDate.value = state.due.toISOString().slice(0, 16);
+};
+
+saveBtn.onclick = () => {
+  state.title = editTitle.value;
+  state.desc = editDesc.value;
+  state.priority = editPriority.value;
+  state.due = new Date(editDate.value);
+  
+  editForm.classList.add("hidden");
+  viewMode.classList.remove("hidden");
+  render();
+};
+
+cancelBtn.onclick = () => {
+  editForm.classList.add("hidden");
+  viewMode.classList.remove("hidden");
+};</script>
+
+</body>
+</html>
